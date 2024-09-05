@@ -37,6 +37,10 @@ function createNavigationButton(prevCommitId, nextCommitId, githubUserId, github
     navigationButtonContainer.append(prevButton);
     navigationButtonContainer.append(nextButton);
 
+    // 両方のボタンが無効な場合は追加しない
+    if (!prevCommitId && !nextCommitId) {
+        return;
+    }
     parentNode.append(navigationButtonContainer);
 }
 
