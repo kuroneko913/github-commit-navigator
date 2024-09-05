@@ -1,46 +1,75 @@
 // Commit画面にprev, nextボタンを追加する
-function createNavigationButton(prevCommitId, nextCommitId, githubUserId, githubRepoName)
-{
+function createNavigationButton(prevCommitId, nextCommitId, githubUserId, githubRepoName) {
     const parentNode = document.getElementsByClassName("commit-branches")[0];
+    
+    // parentNodeが存在するか確認
+    if (!parentNode) {
+        console.error("Parent node 'commit-branches' not found.");
+        return;
+    }
+
+    // 両方のボタンが無効な場合は処理を中断
+    if (!prevCommitId && !nextCommitId) {
+        return;
+    }
+
     const githubRepositoryUrl = `https://github.com/${githubUserId}/${githubRepoName}`;
 
+    // Prevボタンの作成
     const prevButton = document.createElement('button');
     prevButton.id = 'prev-button';
     prevButton.textContent = 'Prev';
     prevButton.style.padding = '10px';
     prevButton.classList.add('navigation-button');
     prevButton.disabled = !prevCommitId;
-    prevButton.prepend(new DOMParser().parseFromString(getPrevSvg(), 'image/svg+xml').documentElement);
+    
+    // SVGの追加 (エラー処理付き)
+    try {
+        const prevSvg = new DOMParser().parseFromString(getPrevSvg(), 'image/svg+xml').documentElement;
+        prevButton.prepend(prevSvg);
+    } catch (e) {
+        console.error('Error parsing Prev SVG:', e);
+    }
+
     prevButton.onclick = function () {
         if (prevCommitId) {
             window.location.href = `${githubRepositoryUrl}/commit/${prevCommitId}`;
         }
     };
 
+    // Nextボタンの作成
     const nextButton = document.createElement('button');
     nextButton.id = 'next-button';
     nextButton.textContent = 'Next';
     nextButton.style.padding = '10px';
     nextButton.classList.add('navigation-button');
     nextButton.disabled = !nextCommitId;
-    nextButton.appendChild(new DOMParser().parseFromString(getNextSvg(), 'image/svg+xml').documentElement);
+
+    // SVGの追加 (エラー処理付き)
+    try {
+        const nextSvg = new DOMParser().parseFromString(getNextSvg(), 'image/svg+xml').documentElement;
+        nextButton.appendChild(nextSvg);
+    } catch (e) {
+        console.error('Error parsing Next SVG:', e);
+    }
+
     nextButton.onclick = function () {
         if (nextCommitId) {
             window.location.href = `${githubRepositoryUrl}/commit/${nextCommitId}`;
         }
     };
 
+    // ボタンコンテナの作成
     const navigationButtonContainer = document.createElement('div');
     navigationButtonContainer.style.display = 'flex';
     navigationButtonContainer.style.justifyContent = 'end';
     navigationButtonContainer.style.marginBottom = '10px';
+
+    // コンテナにボタンを追加
     navigationButtonContainer.append(prevButton);
     navigationButtonContainer.append(nextButton);
 
-    // 両方のボタンが無効な場合は追加しない
-    if (!prevCommitId && !nextCommitId) {
-        return;
-    }
+    // 親ノードにコンテナを追加
     parentNode.append(navigationButtonContainer);
 }
 
