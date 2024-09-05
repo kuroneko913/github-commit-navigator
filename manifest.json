@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "GitHub Commit Navigator",
+    "version": "1.0",
+    "description": "Easily navigate to the previous or next commit on GitHub.",
+    "permissions": ["storage", "activeTab", "scripting"],
+    "content_scripts": [
+      {
+        "matches": ["https://github.com/*"],
+        "js": ["content.js"],
+        "css": ["content.css"],
+        "run_at": "document_end"
+      }
+    ]
+}

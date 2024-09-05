@@ -1,0 +1,53 @@
+.navigation-button {
+    padding: 4px 20px;
+    height: 28px;
+    border: none;
+    color: #fff;
+    font-size: 0.8rem;
+    background-color: #22282f;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .navigation-button:hover {
+    background-color: #444;
+  }
+  
+  .navigation-button[disabled] {
+    background-color: gray;
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .navigation-button.disabled:hover {
+    background-color: gray;
+    opacity: 0.5;
+  }
+  
+  #prev-button {
+    border-radius: 5px 0 0 5px;
+    border-right: 1px solid #555; /* ボタン間の境界線の色を少し明るく */
+  }
+  
+  #next-button {
+    border-radius: 0 5px 5px 0;
+    border-left: 1px solid #555; /* 同様にボタン間の境界線の色を調整 */
+  }
+  
+  .navigation-button svg {
+    margin-right: 6px; /* 右の余白を微調整 */
+    vertical-align: middle;
+  }
+  
+  #next-button svg {
+    margin-left: 6px; /* 左の余白も微調整 */
+    margin-right: 0; /* 不要な右の余白を削除 */
+  }
+  
+  svg {
+    width: 12px;  /* アイコンの幅を微調整 */
+    height: 12px; /* アイコンの高さを微調整 */
+    vertical-align: middle;  /* アイコンの中央揃え */
+  }
