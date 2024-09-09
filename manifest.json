@@ -13,7 +13,7 @@
       "https://github.com/*"
     ],
     "background": {
-      "service_worker": "background.js"
+      "service_worker": "src/background.js"
     },
     "web_accessible_resources": [
       {

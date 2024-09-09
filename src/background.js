@@ -35,7 +35,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(debounce(function(details
             }
             chrome.scripting.executeScript({
                 target: {tabId: details.tabId},
-                files: ['createNavigationButton.js'],
+                files: ['dist/bundle.js'],
             });
         });
     }
