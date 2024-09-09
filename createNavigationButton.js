@@ -1,7 +1,6 @@
 // Commit画面にprev, nextボタンを追加する
 function createNavigationButton(prevCommitId, nextCommitId, githubUserId, githubRepoName) {
     const parentNode = document.getElementsByClassName("commit-branches")[0];
-    
     // parentNodeが存在するか確認
     if (!parentNode) {
         console.error("Parent node 'commit-branches' not found.");
@@ -10,6 +9,11 @@ function createNavigationButton(prevCommitId, nextCommitId, githubUserId, github
 
     // 両方のボタンが無効な場合は処理を中断
     if (!prevCommitId && !nextCommitId) {
+        return;
+    }
+
+    // 既にボタンが存在する場合は処理を中断
+    if (document.getElementById('prev-button') || document.getElementById('next-button')) {
         return;
     }
 
@@ -22,8 +26,7 @@ function createNavigationButton(prevCommitId, nextCommitId, githubUserId, github
     prevButton.style.padding = '10px';
     prevButton.classList.add('navigation-button');
     prevButton.disabled = !prevCommitId;
-    
-    // SVGの追加 (エラー処理付き)
+
     try {
         const prevSvg = new DOMParser().parseFromString(getPrevSvg(), 'image/svg+xml').documentElement;
         prevButton.prepend(prevSvg);
@@ -45,7 +48,6 @@ function createNavigationButton(prevCommitId, nextCommitId, githubUserId, github
     nextButton.classList.add('navigation-button');
     nextButton.disabled = !nextCommitId;
 
-    // SVGの追加 (エラー処理付き)
     try {
         const nextSvg = new DOMParser().parseFromString(getNextSvg(), 'image/svg+xml').documentElement;
         nextButton.appendChild(nextSvg);
@@ -65,26 +67,26 @@ function createNavigationButton(prevCommitId, nextCommitId, githubUserId, github
     navigationButtonContainer.style.justifyContent = 'end';
     navigationButtonContainer.style.marginBottom = '10px';
 
-    // コンテナにボタンを追加
     navigationButtonContainer.append(prevButton);
     navigationButtonContainer.append(nextButton);
 
-    // 親ノードにコンテナを追加
     parentNode.append(navigationButtonContainer);
 }
 
+// 前のコミットボタンのSVG
 function getPrevSvg() {
     return `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: middle">
-        <path fill-rule="evenodd" d="M10.707 3.293a1 1 0 0 1 1.414 1.414L7.414 10l4.707 4.707a1 1 0 0 1-1.414 1.414l-5-5a1 1 0 0 1 0-1.414l5-5z"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="bi bi-arrow-right" width="16" height="16">
+        <path fill-rule="evenodd" d="M8.646 11.354a.5.5 0 0 0 .793-.707L5.707 8l3.732-3.732a.5.5 0 0 0-.793-.707l-4 4a.5.5 0 0 0 0 .707l4 4z"/>
     </svg>
     `;
 }
 
+// 次のコミットボタンのSVG
 function getNextSvg() {
     return `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: middle">
-        <path fill-rule="evenodd" d="M9.293 16.707a1 1 0 0 1-1.414-1.414L12.586 10 7.879 5.293a1 1 0 0 1 1.414-1.414l5 5a1 1 0 0 1 0 1.414l-5 5z"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="bi bi-arrow-left" width="16" height="16">
+        <path fill-rule="evenodd" d="M7.354 11.354a.5.5 0 0 0 .793.707l4-4a.5.5 0 0 0 0-.707l-4-4a.5.5 0 0 0-.793.707L10.293 8l-2.939 2.939a.5.5 0 0 0 0 .707z"/>
     </svg>
     `;
 }
@@ -104,7 +106,6 @@ async function fetchCommitIds(githubUserId, githubRepoName, expiration = 60 * 60
 
     // キャッシュがないか期限切れの場合はAPIから取得
     try {
-        console.log('Fetching commit data...');
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Failed to fetch: ${response.statusText}`);
@@ -122,6 +123,7 @@ async function fetchCommitIds(githubUserId, githubRepoName, expiration = 60 * 60
     }
 }
 
+// 前後のコミットIDを取得
 function getPrevNextCommitId(commitIds, currentCommitId)
 {
     const commitIdIndex = commitIds.findIndex(commit => commit.sha === currentCommitId);
@@ -130,35 +132,23 @@ function getPrevNextCommitId(commitIds, currentCommitId)
     return {prevCommitId, nextCommitId};
 }
 
-function getGithubUserId()
-{
+// GitHubのユーザーIDを取得
+function getGithubUserId() {
     return location.href.split('/')[3];
 }
 
-function getGithubRepoName()
-{
+// GitHubのリポジトリ名を取得
+function getGithubRepoName() {
     return location.href.split('/')[4];
 }
 
-function clearCache()
-{
-    localStorage.clear();
-}
-
-// ページ遷移を監視して、Commitページに遷移したら処理を行う
-function detectPageChange() {
-    let currentPath = window.location.pathname;
-  
-    setInterval(() => {
-      if (currentPath !== window.location.pathname) {
-        currentPath = window.location.pathname;
-  
-        // Commitページに移動したか確認
-        if (currentPath.includes('/commit/')) {
-          main();  // ボタンを追加する処理
-        }
-      }
-    }, 1000); // 1秒ごとにURLの変更をチェック
+// CSSの追加
+function injectCSS(cssFileName, id) {
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = chrome.runtime.getURL(cssFileName);
+    css.id = id;
+    document.head.appendChild(css);
 }
 
 function getCommitCacheKey(githubUserId, githubRepoName)
@@ -166,21 +156,26 @@ function getCommitCacheKey(githubUserId, githubRepoName)
     return `commit_cache_${githubUserId}_${githubRepoName}`;
 }
 
-function main()
-{
+// ページの遷移を監視するための変数
+var currentUrl = window.location.href;
+
+// メイン処理
+function main() {
     if (!window.location.pathname.includes('/commit/')) {
         return;
     }
+
+    // content_scriptで追加しないようにしたのでCSSを動的に追加する
+    injectCSS('content.css', 'github-commit-navigation-css');
     const githubUserId = getGithubUserId();
     const githubRepoName = getGithubRepoName();
     const currentCommitId = location.href.split('/').pop();
+
+    // APIからデータを取得し、ボタンを作成
     fetchCommitIds(githubUserId, githubRepoName).then(commitIds => {
         const {prevCommitId, nextCommitId} = getPrevNextCommitId(commitIds, currentCommitId);
         createNavigationButton(prevCommitId, nextCommitId, githubUserId, githubRepoName);
-    });
+    })
 }
 
 main();
-  
-// ページ遷移を監視
-detectPageChange();
