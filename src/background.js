@@ -9,7 +9,7 @@ function debounce(func, wait) {
 
 // onHistoryStateUpdatedイベントをデバウンス
 chrome.webNavigation.onHistoryStateUpdated.addListener(debounce(function(details) {
-    if (details.url.includes('github.com')) {
+    if (details.url.includes('https://github.com/')) {
         // 現在のタブでボタンがすでに表示されているかどうかを確認
         chrome.scripting.executeScript({
             target: {tabId: details.tabId},

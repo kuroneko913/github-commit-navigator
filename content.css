@@ -13,6 +13,7 @@
   
   .navigation-button:hover {
     background-color: #444;
+    cursor: pointer;
   }
   
   .navigation-button[disabled] {
