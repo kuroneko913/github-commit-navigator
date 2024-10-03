@@ -1,11 +1,11 @@
 // Commit画面にprev, nextボタンを追加する
 function createNavigationButton(prevCommitId, nextCommitId, githubUserId, githubRepoName) {
-    const parentNode = document.getElementsByClassName("commit-branches")[0];
-    // parentNodeが存在するか確認
-    if (!parentNode) {
-        console.error("Parent node 'commit-branches' not found.");
+    const button = document.querySelector('button[aria-label^="Copy full SHA"]');
+    if (!button) {
+        console.error("Button 'Copy full SHA' not found.");
         return;
     }
+    const parentNode = button.parentElement.parentElement.parentElement;
 
     // 両方のボタンが無効な場合は処理を中断
     if (!prevCommitId && !nextCommitId) {

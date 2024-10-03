@@ -23,7 +23,7 @@ function main() {
     if (!window.location.pathname.includes('/commit/')) {
         return;
     }
-
+    console.log('GitHub Commit Navigation Extension loaded.');
     // content_scriptで追加しないようにしたのでCSSを動的に追加する
     injectCSS('content.css', 'github-commit-navigation-css');
     const githubUserId = getGithubUserId();
